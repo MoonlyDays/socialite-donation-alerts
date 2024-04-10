@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 use SocialiteProviders\Manager\OAuth2\User;
 
-class DonationAlerts extends AbstractProvider
+class Provider extends AbstractProvider
 {
     protected function getAuthUrl($state): string
     {
