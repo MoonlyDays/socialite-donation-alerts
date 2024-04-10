@@ -1,5 +1,6 @@
 {
     "name": "moonlydays/laravel-donation-alerts",
+    "description": "Laravel Package to interact with Donation Alerts API",
     "version": "1.0.0",
     "autoload": {
         "psr-4": {

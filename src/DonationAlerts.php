@@ -23,7 +23,6 @@ class DonationAlerts
 
     private function redirectToLogin(): RedirectResponse {
 
-        $url 
 
     }
 }
