@@ -1,29 +1,16 @@
 {
-    "name": "moonlydays/laravel-donation-alerts",
-    "description": "Laravel Package to interact with Donation Alerts API",
+    "name": "moonlydays/socialite-donation-alerts",
+    "description": "Socialite Driver to interact with Donation Alerts API",
     "version": "1.0.0",
     "autoload": {
         "psr-4": {
-            "MoonlyDays\\LaravelDonationAlerts\\": "src/"
+            "MoonlyDays\\SocialiteDonationAlerts\\": "src/"
         }
     },
     "minimum-stability": "stable",
-    "homepage": "https://github.com/MoonlyDays/laravel-donation-alerts",
+    "homepage": "https://github.com/MoonlyDays/socialite-donation-alerts",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "*"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "MoonlyDays\\LaravelDonationAlerts\\ServiceProvider"
-            ]
-        }
-    },
-    "authors": [
-        {
-            "name": "Daniil Basiuc-Brinzei",
-            "email": "moonlydays1@gmail.com"
-        }
-    ]
+        "socialiteproviders/manager": "^4.5"
+    }
 }

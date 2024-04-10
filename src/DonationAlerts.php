@@ -1,71 +1,51 @@
 <?php
 
-namespace MoonlyDays\LaravelDonationAlerts;
+namespace MoonlyDays\SocialiteDonationAlerts;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Fluent;
-use Illuminate\Support\Str;
+use GuzzleHttp\Exception\GuzzleException;
+use SocialiteProviders\Manager\OAuth2\AbstractProvider;
+use SocialiteProviders\Manager\OAuth2\User;
 
-class DonationAlerts
+class DonationAlerts extends AbstractProvider
 {
-    private Fluent $config;
-
-    public function __construct(array $config)
+    protected function getAuthUrl($state): string
     {
-        $this->config = fluent($config);
+        return $this->buildAuthUrlFromBase("https://www.donationalerts.com/oauth/authorize", $state);
     }
 
-    private function getClientId()
+    protected function getTokenUrl(): string
     {
-        return $this->config->get("auth.client_id");
+        return "https://www.donationalerts.com/oauth/token";
     }
 
-    private function getClientSecret()
+    /**
+     * @throws GuzzleException
+     */
+    protected function getUserByToken($token)
     {
-        return $this->config->get("auth.client_secret");
-    }
-
-    public function redirectToLogin(array $scopes = [], string $backUrl = null): RedirectResponse
-    {
-        if (empty($backUrl)) {
-            $backUrl = request()->getRequestUri();
-        }
-
-        $url = $this->buildUrl("https://www.donationalerts.com/oauth/authorize", [
-            "client_id" => $this->getClientId(),
-            "redirect_uri" => $backUrl,
-            "response_type" => "code",
-            "scope" => join(" ", $scopes)
+        $res = $this->getHttpClient()->get("https://www.donationalerts.com/api/v1/user/oauth", [
+            "headers" => [
+                "Authorization" => "Bearer " . $token
+            ]
         ]);
 
-        return redirect()->to($url);
+        return json_decode($res->getBody(), true);
     }
 
-    public function validate()
+    protected function mapUserToObject(array $user): User
     {
-        $code = request("code");
-        if (empty($code)) abort(400, "Authorization code was not provided");
-
-        $token = $this->getAccessToken($code);
-    }
-
-    private function getAccessToken(string $code)
-    {
-        $res = Http::post("https://www.donationalerts.com/oauth/token", [
-            "grant_type" => "authorization_code",
-            "client_id" => $this->getClientId(),
-            "client_secret" => $this->getClientSecret(),
-            "redirect_uri" => "http://localhost:8000/login/back",
-            "code" => $code
+        return (new User())->setRaw($user)->map([
+            'id' => $user['id'],
+            'code' => $user['code'],
+            'name' => $user['name'],
+            'avatar' => $user["avatar"],
+            "email" => $user["email"],
+            "socket_connection_token" => $user["socket_connection_token"]
         ]);
-
-        dd($res);
     }
 
-    function buildUrl($to, array $params = [], array $additional = []): string
+    protected function formatScopes(array $scopes, $scopeSeparator): string
     {
-        return Str::finish(url($to, $additional), '?') . Arr::query($params);
+        return implode(' ', $scopes);
     }
 }
