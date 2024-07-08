@@ -29,7 +29,7 @@ class Provider extends AbstractProvider
             ]
         ]);
 
-        return json_decode($res->getBody(), true);
+        return json_decode($res->getBody(), true)["data"];
     }
 
     protected function mapUserToObject(array $user): User
