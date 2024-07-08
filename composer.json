@@ -1,7 +1,6 @@
 {
     "name": "moonlydays/socialite-donation-alerts",
     "description": "Socialite Driver to interact with Donation Alerts API",
-    "version": "1.0.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
